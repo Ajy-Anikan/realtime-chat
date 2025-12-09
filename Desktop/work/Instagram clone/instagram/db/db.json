@@ -1,0 +1,136 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "user": {
+        "id": 101,
+        "username": "willys_world",
+        "profilePic": "/src/assets/girls_01.jpg"
+      },
+      "image": "/src/assets/post_01.jpg",
+      "caption": "Sunrise was absolutely breathtaking. Feeling so small and inspired! #travel #sunrise",
+      "likes": 589,
+      "comments": [
+        {
+          "user": "_vlogs",
+          "comment": "Incredible view! Worth the early wake-up call."
+        }
+      ],
+      "timestamp": "2025-12-07T08:00:00Z"
+    },
+    {
+      "id": 2,
+      "user": {
+        "id": 102,
+        "username": "Baby_doll",
+        "profilePic": "/src/assets/girls_02.jpg"
+      },
+      "image": "/src/assets/post_02.jpg",
+      "caption": "Mountains have a way of putting life into perspective. Grateful for moments like these. #nature #hiking #peace",
+      "likes": 315,
+      "comments": [
+        {
+          "user": "travel_explorer",
+          "comment": "Incredible view!, where is this?"
+        }
+      ],
+      "timestamp": "2025-12-07T10:15:00Z"
+    },
+    {
+      "id": 3,
+      "user": {
+        "id": 103,
+        "username": "alyz_stars",
+        "profilePic": "/src/assets/girls_03.jpg"
+      },
+      "image": "/src/assets/post_03.jpg",
+      "caption": "A park will always be a good idea for a weekend picnic! #foodie #picnic #weekendvibes",
+      "likes": 1204,
+      "comments": [
+        {
+          "user": "ginger_cooks",
+          "comment": "That looks amazing!"
+        }
+      ],
+      "timestamp": "2025-12-06T19:30:00Z"
+    }
+  ],
+  "profile": {
+    "id": 101,
+    "username": "willys_world",
+    "profilePic": "/src/assets/girls_01.jpg"
+  },
+  "suggestions": [
+    {
+      "id": 101,
+      "username": "willys_world",
+      "profilePic": "/src/assets/girls_01.jpg"
+    },
+    {
+      "id": 102,
+      "username": "Baby_doll",
+      "profilePic": "/src/assets/girls_02.jpg"
+    },
+    {
+      "id": 103,
+      "username": "alyz_stars",
+      "profilePic": "/src/assets/girls_03.jpg"
+    },
+    {
+      "id": 104,
+      "username": "Lauren philips",
+      "profilePic": "/src/assets/girls_03.jpg"
+    },
+    {
+      "id": 105,
+      "username": "Mia_melano",
+      "profilePic": "/src/assets/girls_03.jpg"
+    }
+  ],
+  "stories": [
+    {
+      "id": "1",
+      "user": {
+        "id": 101,
+        "username": "willys_world",
+        "profilePic": "/src/assets/girls_01.jpg"
+      },
+      "image": "/src/assets/post_01.jpg"
+    },
+    {
+      "id": "2",
+      "user": {
+        "id": 102,
+        "username": "Baby_doll",
+        "profilePic": "/src/assets/girls_02.jpg"
+      },
+      "image": "/src/assets/post_02.jpg"
+    },
+    {
+      "id": "3",
+      "user": {
+        "id": 103,
+        "username": "alyz_stars",
+        "profilePic": "/src/assets/girls_03.jpg"
+      },
+      "image": "/src/assets/post_03.jpg"
+    }
+  ],
+  "followers": [
+    {
+      "id": 201,
+      "username": "travel_explorer",
+      "profilePic": "/src/assets/girls_02.jpg"
+    },  
+    {
+      "id": 202,
+      "username": "foodie_lover",
+      "profilePic": "/src/assets/girls_03.jpg"
+    },  
+    {
+      "id": 203,
+      "username": "nature_seeker",
+      "profilePic": "/src/assets/girls_01.jpg"  
+}]
+}
+
