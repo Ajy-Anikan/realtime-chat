@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Chat App · 7-Day Build Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #FAFAF8;
+    --surface: #FFFFFF;
+    --border: #E8E6E1;
+    --muted: #A09D97;
+    --text: #1C1917;
+    --text-2: #57534E;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+  }
+
+  .header {
+    max-width: 780px;
+    margin: 0 auto 60px;
+    border-bottom: 1.5px solid var(--text);
+    padding-bottom: 28px;
+  }
+
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 6vw, 58px);
+    line-height: 1.05;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+
+  .stack-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    background: white;
+  }
+
+  /* Progress bar */
+  .progress-bar-wrap {
+    max-width: 780px;
+    margin: 0 auto 48px;
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-family: 'DM Mono', monospace;
+  }
+  .bar-track {
+    height: 3px;
+    background: var(--border);
+    width: 100%;
+  }
+  .bar-fill {
+    height: 100%;
+    background: var(--text);
+    transition: width 0.4s ease;
+  }
+
+  /* Day tabs */
+  .tabs {
+    max-width: 780px;
+    margin: 0 auto 32px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    background: white;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  .tab:hover { border-color: var(--text); color: var(--text); }
+  .tab.active { background: var(--text); color: white; border-color: var(--text); }
+  .tab.done { border-color: #16A34A; color: #16A34A; }
+  .tab.done.active { background: #16A34A; color: white; }
+
+  /* Day panel */
+  .day-panel {
+    max-width: 780px;
+    margin: 0 auto;
+    display: none;
+    animation: fadeIn 0.2s ease;
+  }
+  .day-panel.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  .day-header {
+    margin-bottom: 28px;
+  }
+
+  .day-num-title {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 6px;
+  }
+
+  .day-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    border: 1px solid currentColor;
+  }
+
+  .day-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+  }
+
+  .day-subtitle {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--text-2);
+    margin-bottom: 12px;
+  }
+
+  .day-goal {
+    font-size: 13px;
+    color: var(--text-2);
+    padding: 12px 16px;
+    border-left: 2px solid currentColor;
+    background: white;
+    line-height: 1.6;
+  }
+
+  /* Task list */
+  .task-list { margin-top: 24px; }
+
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .task-item:first-child { border-top: 1px solid var(--border); }
+
+  .task-item:hover { background: #F9F9F8; margin: 0 -16px; padding: 14px 16px; }
+
+  .check-box {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--border);
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .check-icon { display: none; font-size: 11px; }
+
+  .task-item.done .check-box {
+    background: var(--text);
+    border-color: var(--text);
+  }
+
+  .task-item.done .check-icon { display: block; color: white; }
+
+  .task-text {
+    flex: 1;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--text);
+    transition: opacity 0.2s;
+  }
+
+  .task-item.done .task-text {
+    opacity: 0.4;
+    text-decoration: line-through;
+    text-decoration-color: var(--muted);
+  }
+
+  .task-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+    margin-top: 4px;
+  }
+
+  /* Day complete banner */
+  .complete-banner {
+    margin-top: 32px;
+    padding: 20px 24px;
+    background: #F0FDF4;
+    border: 1px solid #86EFAC;
+    display: none;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .complete-banner.show { display: flex; }
+
+  .complete-banner span {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    color: #15803D;
+  }
+
+  /* Nav */
+  .nav-row {
+    max-width: 780px;
+    margin: 40px auto 0;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .nav-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 10px 20px;
+    border: 1px solid var(--border);
+    background: white;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.06em;
+  }
+
+  .nav-btn:hover { border-color: var(--text); background: var(--text); color: white; }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .nav-btn:disabled:hover { border-color: var(--border); background: white; color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <p class="eyebrow">Build Log · Real-Time Chat App</p>
+  <h1>7-Day Build Plan</h1>
+  <div class="stack-tags">
+    <span class="tag">Next.js 14</span>
+    <span class="tag">Pusher Channels</span>
+    <span class="tag">PostgreSQL</span>
+    <span class="tag">Prisma</span>
+    <span class="tag">NextAuth</span>
+    <span class="tag">Vercel</span>
+    <span class="tag">Light / Minimal</span>
+  </div>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-meta">
+    <span>Overall Progress</span>
+    <span id="progress-label">0 / 56 tasks</span>
+  </div>
+  <div class="bar-track"><div class="bar-fill" id="bar" style="width:0%"></div></div>
+</div>
+
+<div class="tabs" id="tabs"></div>
+
+<div id="panels"></div>
+
+<div class="nav-row">
+  <button class="nav-btn" id="prev-btn" onclick="changeDay(-1)" disabled>← Previous</button>
+  <button class="nav-btn" id="next-btn" onclick="changeDay(1)">Next →</button>
+</div>
+
+<script>
+const DAYS = [
+  {
+    num: 1, title: "Project Setup & Architecture", color: "#3B82F6",
+    subtitle: "Environment, repo, and Next.js scaffolding",
+    goal: "Goal: You should have a running Next.js app in your browser by end of day.",
+    tasks: [
+      ["Install Node.js 20+ and verify with `node -v` and `npm -v`", "Terminal"],
+      ["Create GitHub repo named `realtime-chat`", "github.com"],
+      ["Run: npx create-next-app@14 realtime-chat --typescript --app --tailwind --eslint", "scaffold"],
+      ["Run `npm run dev` and visit localhost:3000 — confirm it loads", "✅ Running"],
+      ["Create a Pusher account at pusher.com (free Sandbox tier)", "pusher.com"],
+      ["Create a Pusher Channel app — copy App ID, Key, Secret, Cluster", "credentials"],
+      ["Create `.env.local` file with all Pusher credentials + NEXTAUTH_SECRET", ".env.local"],
+      ["Initial commit: `git add . && git commit -m 'init: Next.js scaffold'`", "git commit"],
+    ]
+  },
+  {
+    num: 2, title: "Database & Auth", color: "#8B5CF6",
+    subtitle: "User accounts, sessions, and message persistence",
+    goal: "Goal: Users can register, log in, and stay logged in across refreshes.",
+    tasks: [
+      ["Install: npm install next-auth @auth/prisma-adapter prisma @prisma/client", "packages"],
+      ["Run `npx prisma init` — creates prisma/schema.prisma", "prisma/"],
+      ["Sign up for Neon.tech or Supabase — copy PostgreSQL connection string", "DB_URL"],
+      ["Define Prisma schema: User, Message, Room models", "schema.prisma"],
+      ["Run `npx prisma migrate dev --name init` to create tables", "DB tables"],
+      ["Configure NextAuth with GitHub OAuth or Credentials provider", "auth.ts"],
+      ["Create /app/api/auth/[...nextauth]/route.ts", "auth route"],
+      ["Add login/logout to test page — confirm sign-in works end to end", "✅ Auth"],
+    ]
+  },
+  {
+    num: 3, title: "Backend API & Pusher", color: "#10B981",
+    subtitle: "Message sending, receiving, and real-time events",
+    goal: "Goal: Sending a POST request triggers a Pusher event visible in Pusher's debug console.",
+    tasks: [
+      ["Install: npm install pusher pusher-js uuid", "packages"],
+      ["Create lib/pusher.ts — server-side Pusher client using env vars", "lib/pusher.ts"],
+      ["Create lib/pusherClient.ts — browser-side Pusher singleton", "pusherClient.ts"],
+      ["Create app/api/messages/route.ts — POST: save to DB, trigger `new-message` event", "POST route"],
+      ["Add GET handler — fetch last 50 messages for a room", "GET route"],
+      ["Create app/api/rooms/route.ts — list and create chat rooms", "rooms API"],
+      ["Test with Postman or curl — verify Pusher debug console shows event", "✅ Events"],
+      ["Commit: `git commit -m 'feat: backend API + Pusher integration'`", "commit"],
+    ]
+  },
+  {
+    num: 4, title: "Chat UI — Core Components", color: "#F59E0B",
+    subtitle: "Building the message list, input bar, and sidebar",
+    goal: "Goal: A static but pixel-perfect chat interface visible in the browser.",
+    tasks: [
+      ["Add DM Serif Display + DM Sans Google Fonts to app/layout.tsx", "fonts"],
+      ["Create components/Sidebar.tsx — room list, user avatar, logout", "Sidebar.tsx"],
+      ["Create components/MessageBubble.tsx — single message with avatar + time", "Bubble.tsx"],
+      ["Create components/MessageList.tsx — scrollable list of bubbles", "List.tsx"],
+      ["Create components/InputBar.tsx — textarea + send button, Enter key", "InputBar.tsx"],
+      ["Create components/TypingIndicator.tsx — animated dots", "Typing.tsx"],
+      ["Create app/chat/[roomId]/page.tsx — assembles all components", "Chat page"],
+      ["Apply Light / Minimal theme: white bg, slate text, thin borders", "✅ Styled"],
+    ]
+  },
+  {
+    num: 5, title: "Real-Time Wiring", color: "#EF4444",
+    subtitle: "Connect Pusher to the UI for live messages",
+    goal: "Goal: Open two browser tabs — message in one appears instantly in the other.",
+    tasks: [
+      ["In MessageList: subscribe to Pusher channel on component mount", "useEffect"],
+      ["Listen for `new-message` events — append to local state", "live msgs"],
+      ["In InputBar: call POST /api/messages on send, clear input on success", "send works"],
+      ["Add typing: debounce keystrokes → trigger Pusher `client-typing` event", "typing evt"],
+      ["Subscribe to `client-typing` → show/hide TypingIndicator", "typing UI"],
+      ["Auto-scroll message list to bottom on new message", "auto-scroll"],
+      ["Load existing messages from GET /api/messages on page mount", "history"],
+      ["Open 2 tabs, send messages — verify real-time delivery", "✅ Live!"],
+    ]
+  },
+  {
+    num: 6, title: "Polish & UX Details", color: "#EC4899",
+    subtitle: "Animations, error handling, and responsive design",
+    goal: "Goal: The app feels smooth, handles edge cases, and looks great on mobile.",
+    tasks: [
+      ["Add message send animation — bubble slides up from input", "CSS anim"],
+      ["Add optimistic UI — message appears before server confirms", "optimistic"],
+      ["Show error toast if message fails to send", "errors"],
+      ["Show green dot for users active in the last 5 minutes", "presence"],
+      ["Add emoji picker (npm install emoji-picker-react)", "emoji 🎉"],
+      ["Make layout fully responsive — sidebar collapses on mobile", "mobile"],
+      ["Add empty state — illustration + text when no messages yet", "empty state"],
+      ["Keyboard accessibility — Tab nav, Enter to send, Escape to cancel", "✅ A11y"],
+    ]
+  },
+  {
+    num: 7, title: "Deployment & Launch", color: "#06B6D4",
+    subtitle: "Ship to Vercel with production database and monitoring",
+    goal: "Goal: Your chat app is live at a public URL anyone can visit.",
+    tasks: [
+      ["Create Dockerfile and .dockerignore for container deployment", "Dockerfile"],
+      ["Create vercel.json with build and routing config", "vercel.json"],
+      ["Push all code to GitHub main branch", "git push"],
+      ["Install Vercel CLI: npm i -g vercel — run `vercel login`", "CLI ready"],
+      ["Run `vercel` in project root — follow prompts", "Vercel proj"],
+      ["Add all env vars to Vercel dashboard", "env vars"],
+      ["Run `npx prisma migrate deploy` against production DB", "prod DB"],
+      ["Visit your .vercel.app URL — test the full flow end to end!", "🚀 LIVE!"],
+    ]
+  }
+];
+
+const STORAGE_KEY = 'chat-app-progress-v1';
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch { return {}; }
+}
+
+function saveState(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+let currentDay = 0;
+
+function taskKey(dayIdx, taskIdx) { return `d${dayIdx}-t${taskIdx}`; }
+
+function countCompleted() {
+  let total = 0;
+  DAYS.forEach((day, di) => day.tasks.forEach((_, ti) => {
+    if (state[taskKey(di, ti)]) total++;
+  }));
+  return total;
+}
+
+function isDayDone(di) {
+  return DAYS[di].tasks.every((_, ti) => state[taskKey(di, ti)]);
+}
+
+function updateProgress() {
+  const done = countCompleted();
+  const total = DAYS.reduce((a, d) => a + d.tasks.length, 0);
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('bar').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `${done} / ${total} tasks`;
+
+  // Update tabs
+  DAYS.forEach((_, di) => {
+    const tab = document.getElementById(`tab-${di}`);
+    tab.className = 'tab' + (di === currentDay ? ' active' : '') + (isDayDone(di) ? ' done' : '');
+  });
+}
+
+function toggleTask(di, ti) {
+  const key = taskKey(di, ti);
+  state[key] = !state[key];
+  saveState(state);
+  renderDay(di);
+  updateProgress();
+}
+
+function renderDay(di) {
+  const day = DAYS[di];
+  const panel = document.getElementById(`panel-${di}`);
+  const allDone = isDayDone(di);
+
+  panel.innerHTML = `
+    <div class="day-header">
+      <div class="day-num-title">
+        <span class="day-num" style="color:${day.color};border-color:${day.color}">DAY ${day.num}</span>
+        <span class="day-title">${day.title}</span>
+      </div>
+      <div class="day-subtitle">${day.subtitle}</div>
+      <div class="day-goal" style="border-color:${day.color}">${day.goal}</div>
+    </div>
+    <div class="task-list">
+      ${day.tasks.map(([text, tag], ti) => {
+        const done = !!state[taskKey(di, ti)];
+        return `
+        <div class="task-item ${done ? 'done' : ''}" onclick="toggleTask(${di},${ti})">
+          <div class="check-box"><span class="check-icon">✓</span></div>
+          <div style="flex:1">
+            <div class="task-text">${text}</div>
+            <div class="task-tag">${tag}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="complete-banner ${allDone ? 'show' : ''}">
+      <span>🎉 Day ${day.num} complete! Great work.</span>
+    </div>
+  `;
+}
+
+function renderAll() {
+  const tabsEl = document.getElementById('tabs');
+  const panelsEl = document.getElementById('panels');
+  tabsEl.innerHTML = '';
+  panelsEl.innerHTML = '';
+
+  DAYS.forEach((day, di) => {
+    const tab = document.createElement('button');
+    tab.className = 'tab' + (di === 0 ? ' active' : '');
+    tab.id = `tab-${di}`;
+    tab.textContent = `D${day.num} · ${day.title.split(' ')[0]}`;
+    tab.onclick = () => setDay(di);
+    tabsEl.appendChild(tab);
+
+    const panel = document.createElement('div');
+    panel.className = 'day-panel' + (di === 0 ? ' active' : '');
+    panel.id = `panel-${di}`;
+    panelsEl.appendChild(panel);
+
+    renderDay(di);
+  });
+
+  updateProgress();
+}
+
+function setDay(di) {
+  document.querySelector('.day-panel.active')?.classList.remove('active');
+  document.getElementById(`panel-${di}`).classList.add('active');
+  currentDay = di;
+  updateProgress();
+  document.getElementById('prev-btn').disabled = di === 0;
+  document.getElementById('next-btn').disabled = di === DAYS.length - 1;
+}
+
+function changeDay(dir) {
+  const next = currentDay + dir;
+  if (next >= 0 && next < DAYS.length) setDay(next);
+}
+
+renderAll();
+</script>
+</body>
+</html>
